@@ -1,8 +1,9 @@
 'use client'
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
-import type { AppState, Controls, TabName, DesignTokens } from '@/types'
+import type { AppState, Controls, TabName, Vibe } from '@/types'
 import { generateTokens } from '@/lib/tokens'
 import { extractPalette } from '@/lib/palette'
+import { extractVibe } from '@/lib/vibe'
 
 const DEFAULT_CONTROLS: Controls = { roundedness: 0.5, boldness: 0.5, contrast: 0.5 }
 
@@ -22,6 +23,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     imageEl: null,
     palette: [],
     tokens: null,
+    vibe: null,
     controls: DEFAULT_CONTROLS,
     activeTab: 'palette',
     fontPairingOverride: null,
@@ -31,11 +33,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const url = URL.createObjectURL(file)
     const img = new Image()
     img.src = url
-    await new Promise<void>(res => {
-      img.onload = () => res()
-    })
-    const palette = await extractPalette(img)
+    await new Promise<void>(res => { img.onload = () => res() })
+
+    const [palette, vibe] = await Promise.all([
+      extractPalette(img),
+      Promise.resolve(extractVibe(img)),
+    ])
     const tokens = generateTokens(palette, DEFAULT_CONTROLS, null)
+
     setState(s => ({
       ...s,
       imageFile: file,
@@ -43,6 +48,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       imageEl: img,
       palette,
       tokens,
+      vibe,
       controls: DEFAULT_CONTROLS,
       fontPairingOverride: null,
       activeTab: 'palette',

@@ -7,26 +7,17 @@ export default function Upload() {
   const [dragging, setDragging] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const handleFile = useCallback(
-    async (file: File) => {
-      if (!file.type.startsWith('image/')) return
-      setLoading(true)
-      try {
-        await loadImage(file)
-      } finally {
-        setLoading(false)
-      }
-    },
-    [loadImage]
-  )
+  const handleFile = useCallback(async (file: File) => {
+    if (!file.type.startsWith('image/')) return
+    setLoading(true)
+    try { await loadImage(file) } finally { setLoading(false) }
+  }, [loadImage])
 
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    setDragging(false)
+    e.preventDefault(); setDragging(false)
     const file = e.dataTransfer.files[0]
     if (file) handleFile(file)
   }
-
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) handleFile(file)
@@ -38,31 +29,52 @@ export default function Upload() {
       onDragOver={e => { e.preventDefault(); setDragging(true) }}
       onDragLeave={() => setDragging(false)}
       onClick={() => document.getElementById('file-input')?.click()}
-      className={`flex flex-col items-center justify-center border-2 border-dashed rounded-3xl p-20 cursor-pointer transition-all duration-200 select-none ${
-        dragging
-          ? 'border-white/50 bg-white/8 scale-[1.01]'
-          : 'border-white/15 hover:border-white/30 hover:bg-white/3'
-      }`}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: `1.5px dashed ${dragging ? '#7C5DFF' : 'var(--border-strong)'}`,
+        borderRadius: '20px',
+        padding: '3.5rem 2rem',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        background: dragging ? 'rgba(124,93,255,0.04)' : 'var(--bg)',
+        transform: dragging ? 'scale(1.01)' : 'scale(1)',
+        userSelect: 'none',
+        boxShadow: dragging ? '0 0 0 4px rgba(124,93,255,0.08)' : 'none',
+      }}
     >
       {loading ? (
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-          <p className="text-white/60 text-sm">Extracting palette…</p>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+          <div style={{
+            width: '32px', height: '32px',
+            border: '2px solid var(--border)',
+            borderTopColor: 'var(--text)',
+            borderRadius: '50%',
+            animation: 'spin 0.7s linear infinite',
+          }} />
+          <p style={{ color: 'var(--text-2)', fontSize: '0.875rem' }}>Analysing image…</p>
         </div>
       ) : (
         <>
-          <div className="text-5xl mb-5 opacity-60">⬆</div>
-          <p className="text-xl font-medium text-white/80 mb-2">Drop an image here</p>
-          <p className="text-sm text-white/35">or click to browse · JPEG, PNG, WebP, GIF</p>
+          <div style={{
+            width: '48px', height: '48px', borderRadius: '14px',
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '1.35rem', marginBottom: '1.25rem', color: 'var(--text-2)',
+          }}>
+            ↑
+          </div>
+          <p style={{ color: 'var(--text)', fontWeight: 600, marginBottom: '0.35rem', fontSize: '0.9375rem' }}>
+            Drop your image here
+          </p>
+          <p style={{ color: 'var(--text-3)', fontSize: '0.8125rem' }}>
+            or click to browse · JPEG, PNG, WebP
+          </p>
         </>
       )}
-      <input
-        id="file-input"
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={onChange}
-      />
+      <input id="file-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={onChange} />
     </div>
   )
 }

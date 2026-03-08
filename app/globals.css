@@ -1,72 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --bg: #0a0a0a;
+  --bg: #ffffff;
+  --surface: #f7f7f5;
+  --surface-2: #f0eeeb;
+  --border: #e8e6e2;
+  --border-strong: #d0cdc9;
+  --text: #1a1814;
+  --text-2: #6b6560;
+  --text-3: #a8a49f;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.05);
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
 body {
-  background: #0a0a0a;
-  color: #f5f5f5;
-  font-family: -apple-system, 'Inter', BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Instrument Sans', -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Rainbow animated text */
+.rainbow-text {
+  background: linear-gradient(135deg,
+    #FF6B6B 0%, #FF8E53 14%, #FFD166 28%,
+    #51CF66 42%, #40C4FF 57%, #7C5DFF 71%,
+    #E040FB 85%, #FF6B6B 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: rainbow-shift 8s ease infinite;
 }
 
-.tab-active {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+@keyframes rainbow-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
 }
 
-canvas {
-  display: block;
+/* Card surfaces */
+.card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
 }
 
-/* Slider styling */
+.card-elevated {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+}
+
+/* Tab pills */
+.tab-pill {
+  padding: 0.375rem 1.1rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-2);
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  white-space: nowrap;
+  font-family: 'Instrument Sans', sans-serif;
+}
+.tab-pill:hover  { color: var(--text); background: var(--surface); }
+.tab-pill.active { background: var(--text); color: #fff; }
+
+/* Mono label */
+.label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* Range sliders */
 input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.15);
+  height: 3px;
+  background: var(--border);
   border-radius: 9999px;
   outline: none;
+  cursor: pointer;
 }
-
 input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
-  background: white;
+  width: 15px;
+  height: 15px;
+  background: var(--text);
   border-radius: 50%;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
 }
-
 input[type='range']::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
+  transform: scale(1.18);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.22);
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 3px;
-}
+canvas { display: block; }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); }

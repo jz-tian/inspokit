@@ -36,28 +36,28 @@ function WallpaperCard({
   }
 
   return (
-    <div className="glass rounded-2xl overflow-hidden flex flex-col">
-      <div className="flex items-start justify-between px-4 py-3 border-b border-white/8">
+    <div className="card-elevated rounded-2xl overflow-hidden flex flex-col">
+      <div className="flex items-start justify-between px-4 py-3 border-b border-[var(--border)]">
         <div>
-          <p className="text-sm font-medium">{label}</p>
-          <p className="text-xs text-white/35 mt-0.5">{desc}</p>
+          <p className="text-sm font-semibold text-[var(--text)]">{label}</p>
+          <p className="text-xs text-[var(--text-3)] mt-0.5 leading-relaxed">{desc}</p>
         </div>
         <button
           onClick={download}
-          className="text-xs text-white/35 hover:text-white/70 transition-colors shrink-0 ml-3 mt-0.5"
+          className="text-xs text-[var(--text-3)] hover:text-[var(--text)] transition-colors shrink-0 ml-3 mt-0.5 border border-[var(--border)] rounded px-2 py-0.5"
         >
           ↓ PNG
         </button>
       </div>
       {/* Canvas preview at iPhone aspect ratio */}
-      <div className="relative bg-black/20" style={{ aspectRatio: '1290/2796' }}>
+      <div className="relative bg-[var(--surface)]" style={{ aspectRatio: '1290/2796' }}>
         <canvas
           ref={canvasRef}
           style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover' }}
         />
       </div>
-      <div className="px-4 py-2 border-t border-white/8">
-        <p className="text-xs text-white/25 font-mono">1290 × 2796 px</p>
+      <div className="px-4 py-2 border-t border-[var(--border)]">
+        <p className="text-xs text-[var(--text-3)] font-mono">1290 × 2796 px · iPhone 15 Pro Max</p>
       </div>
     </div>
   )
@@ -82,15 +82,17 @@ export default function Wallpapers() {
   }
 
   return (
-    <div className="space-y-5 max-w-5xl">
+    <div className="space-y-6 max-w-5xl">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xs uppercase tracking-widest text-white/30">iPhone Wallpapers</h2>
-          <p className="text-xs text-white/20 mt-1">1290 × 2796 px · iPhone 15 Pro Max</p>
+          <h2 className="text-sm font-semibold text-[var(--text)]" style={{ fontFamily: 'Cormorant Garant, serif' }}>
+            iPhone Wallpapers
+          </h2>
+          <p className="text-xs text-[var(--text-3)] mt-0.5">1290 × 2796 px · three styles, ready to use</p>
         </div>
         <button
           onClick={exportAll}
-          className="text-sm px-4 py-2 glass rounded-lg hover:bg-white/8 transition-colors"
+          className="text-sm px-4 py-2 rounded-lg border border-[var(--border-strong)] text-[var(--text-2)] hover:bg-[var(--surface)] transition-colors"
         >
           Export All ZIP ↓
         </button>

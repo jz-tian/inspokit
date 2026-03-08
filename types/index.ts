@@ -28,14 +28,27 @@ export interface Controls {
   contrast: number     // 0–1
 }
 
+export interface Vibe {
+  label: string
+  emoji: string
+  description: string
+  mood: string
+  energy: 'low' | 'medium' | 'high'
+  warmth: 'warm' | 'cool' | 'neutral'
+  brightness: 'dark' | 'mid' | 'bright'
+  saturation: 'muted' | 'balanced' | 'vivid'
+  copyTone: string
+}
+
 export type TabName = 'palette' | 'landing' | 'social' | 'wallpapers' | 'mockups'
 
 export interface AppState {
   imageFile: File | null
   imageUrl: string | null
   imageEl: HTMLImageElement | null
-  palette: string[]   // 6 hex colors
+  palette: string[]
   tokens: DesignTokens | null
+  vibe: Vibe | null
   controls: Controls
   activeTab: TabName
   fontPairingOverride: 1 | 2 | 3 | null

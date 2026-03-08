@@ -111,10 +111,15 @@ export default function Mockups() {
   return (
     <div className="space-y-6 max-w-5xl">
       <div className="flex items-center justify-between">
-        <h2 className="text-xs uppercase tracking-widest text-white/30">Device Mockups</h2>
+        <div>
+          <h2 className="text-sm font-semibold text-[var(--text)]" style={{ fontFamily: 'Cormorant Garant, serif' }}>
+            Device Mockups
+          </h2>
+          <p className="text-xs text-[var(--text-3)] mt-0.5">SVG frames with your palette embedded — download and use anywhere</p>
+        </div>
         {generating && (
-          <div className="flex items-center gap-2 text-xs text-white/30">
-            <div className="w-3 h-3 border border-white/20 border-t-white/60 rounded-full animate-spin" />
+          <div className="flex items-center gap-2 text-xs text-[var(--text-3)]">
+            <div className="w-3 h-3 border border-[var(--border-strong)] border-t-[var(--text-2)] rounded-full animate-spin" />
             Generating…
           </div>
         )}
@@ -122,56 +127,56 @@ export default function Mockups() {
 
       <div className="grid grid-cols-2 gap-6">
         {/* Laptop mockup */}
-        <div className="glass rounded-2xl overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-white/8">
+        <div className="card-elevated rounded-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
             <div>
-              <p className="text-sm font-medium">MacBook</p>
-              <p className="text-xs text-white/35 mt-0.5">Landing page preview</p>
+              <p className="text-sm font-semibold text-[var(--text)]">MacBook</p>
+              <p className="text-xs text-[var(--text-3)] mt-0.5">Landing page preview</p>
             </div>
             <button
               onClick={downloadLaptop}
-              className="text-xs text-white/35 hover:text-white/70 transition-colors"
+              className="text-xs text-[var(--text-3)] hover:text-[var(--text)] transition-colors border border-[var(--border)] rounded px-2 py-0.5"
             >
               ↓ SVG
             </button>
           </div>
-          <div className="p-4 bg-gradient-to-b from-white/3 to-transparent">
+          <div className="p-5 bg-[var(--surface)]">
             {laptopSvg ? (
-              <div dangerouslySetInnerHTML={{ __html: laptopSvg }} />
+              <div dangerouslySetInnerHTML={{ __html: laptopSvg }} className="drop-shadow-lg" />
             ) : (
-              <div className="aspect-[900/580] bg-white/5 rounded-lg animate-pulse" />
+              <div className="aspect-[900/580] bg-[var(--border)] rounded-lg animate-pulse" />
             )}
           </div>
         </div>
 
         {/* iPhone mockup */}
-        <div className="glass rounded-2xl overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-white/8">
+        <div className="card-elevated rounded-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
             <div>
-              <p className="text-sm font-medium">iPhone 15 Pro</p>
-              <p className="text-xs text-white/35 mt-0.5">Abstract mesh wallpaper</p>
+              <p className="text-sm font-semibold text-[var(--text)]">iPhone 15 Pro</p>
+              <p className="text-xs text-[var(--text-3)] mt-0.5">Abstract mesh wallpaper</p>
             </div>
             <button
               onClick={downloadIphone}
-              className="text-xs text-white/35 hover:text-white/70 transition-colors"
+              className="text-xs text-[var(--text-3)] hover:text-[var(--text)] transition-colors border border-[var(--border)] rounded px-2 py-0.5"
             >
               ↓ SVG
             </button>
           </div>
-          <div className="p-4 flex justify-center bg-gradient-to-b from-white/3 to-transparent">
-            <div style={{ width: '240px' }}>
+          <div className="p-5 flex justify-center bg-[var(--surface)]">
+            <div style={{ width: '220px' }}>
               {iphoneSvg ? (
-                <div dangerouslySetInnerHTML={{ __html: iphoneSvg }} />
+                <div dangerouslySetInnerHTML={{ __html: iphoneSvg }} className="drop-shadow-lg" />
               ) : (
-                <div className="aspect-[340/700] bg-white/5 rounded-3xl animate-pulse" />
+                <div className="aspect-[340/700] bg-[var(--border)] rounded-3xl animate-pulse" />
               )}
             </div>
           </div>
         </div>
       </div>
 
-      <p className="text-xs text-white/20">
-        SVG device frames — embedded canvas screenshots. Open in browser to view at full resolution.
+      <p className="text-xs text-[var(--text-3)]">
+        SVG device frames with embedded canvas screenshots. Open in browser to view at full resolution.
       </p>
     </div>
   )

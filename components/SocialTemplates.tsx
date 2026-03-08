@@ -38,12 +38,12 @@ function SocialCard({
   const isStory = format === 'story'
 
   return (
-    <div className="glass rounded-xl overflow-hidden flex flex-col">
-      <div className="flex items-center justify-between px-3 py-2 border-b border-white/8">
-        <span className="text-xs text-white/40 truncate">{FORMAT_LABELS[format]}</span>
+    <div className="card rounded-xl overflow-hidden flex flex-col">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-[var(--border)]">
+        <span className="text-xs text-[var(--text-2)] truncate font-medium">{FORMAT_LABELS[format]}</span>
         <button
           onClick={download}
-          className="text-xs text-white/30 hover:text-white/60 transition-colors ml-2 shrink-0"
+          className="text-xs text-[var(--text-3)] hover:text-[var(--text)] transition-colors ml-2 shrink-0"
         >
           ↓
         </button>
@@ -87,10 +87,15 @@ export default function SocialTemplates() {
   return (
     <div className="space-y-6 max-w-5xl">
       <div className="flex items-center justify-between">
-        <h2 className="text-xs uppercase tracking-widest text-white/30">Social Templates</h2>
+        <div>
+          <h2 className="text-sm font-semibold text-[var(--text)]" style={{ fontFamily: 'Cormorant Garant, serif' }}>
+            Social Templates
+          </h2>
+          <p className="text-xs text-[var(--text-3)] mt-0.5">Post, story, and carousel assets at full resolution</p>
+        </div>
         <button
           onClick={exportAll}
-          className="text-sm px-4 py-2 glass rounded-lg hover:bg-white/8 transition-colors"
+          className="text-sm px-4 py-2 rounded-lg border border-[var(--border-strong)] text-[var(--text-2)] hover:bg-[var(--surface)] transition-colors"
         >
           Export All ZIP ↓
         </button>
@@ -98,7 +103,7 @@ export default function SocialTemplates() {
 
       {/* Standalone formats */}
       <div>
-        <p className="text-xs text-white/25 mb-3">Standalone</p>
+        <p className="label mb-3">Standalone</p>
         <div className="grid grid-cols-3 gap-4">
           {standalones.map(fmt => (
             <SocialCard key={fmt} format={fmt} tokens={tokens} />
@@ -108,7 +113,7 @@ export default function SocialTemplates() {
 
       {/* Carousel */}
       <div>
-        <p className="text-xs text-white/25 mb-3">Carousel (5 slides)</p>
+        <p className="label mb-3">Carousel · 5 slides</p>
         <div className="grid grid-cols-5 gap-3">
           {carousel.map(fmt => (
             <SocialCard key={fmt} format={fmt} tokens={tokens} />
