@@ -14,17 +14,19 @@ import JSZip from 'jszip'
 function SocialCard({
   format,
   tokens,
+  subjects,
 }: {
   format: SocialFormat
   tokens: DesignTokens
+  subjects: import('@/types').Subject[]
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
     if (canvasRef.current) {
-      renderSocialTemplate(canvasRef.current, format, tokens)
+      renderSocialTemplate(canvasRef.current, format, tokens, subjects)
     }
-  }, [format, tokens])
+  }, [format, tokens, subjects])
 
   const download = () => {
     if (!canvasRef.current) return
@@ -63,14 +65,14 @@ function SocialCard({
 }
 
 export default function SocialTemplates() {
-  const { tokens } = useApp()
+  const { tokens, subjects } = useApp()
   if (!tokens) return null
 
   const exportAll = async () => {
     const zip = new JSZip()
     for (const fmt of SOCIAL_FORMATS) {
       const canvas = document.createElement('canvas')
-      renderSocialTemplate(canvas, fmt, tokens)
+      renderSocialTemplate(canvas, fmt, tokens, subjects)
       const blob = await new Promise<Blob>(res =>
         canvas.toBlob(b => res(b!), 'image/png')
       )
@@ -106,7 +108,7 @@ export default function SocialTemplates() {
         <p className="label mb-3">Standalone</p>
         <div className="grid grid-cols-3 gap-4">
           {standalones.map(fmt => (
-            <SocialCard key={fmt} format={fmt} tokens={tokens} />
+            <SocialCard key={fmt} format={fmt} tokens={tokens} subjects={subjects} />
           ))}
         </div>
       </div>
@@ -116,7 +118,7 @@ export default function SocialTemplates() {
         <p className="label mb-3">Carousel · 5 slides</p>
         <div className="grid grid-cols-5 gap-3">
           {carousel.map(fmt => (
-            <SocialCard key={fmt} format={fmt} tokens={tokens} />
+            <SocialCard key={fmt} format={fmt} tokens={tokens} subjects={subjects} />
           ))}
         </div>
       </div>

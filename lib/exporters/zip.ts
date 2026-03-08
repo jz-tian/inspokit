@@ -1,6 +1,6 @@
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
-import type { DesignTokens } from '@/types'
+import type { DesignTokens, Subject } from '@/types'
 import { generateLandingHTML } from '@/lib/generators/landing'
 import { renderSocialTemplate, SOCIAL_FORMATS } from '@/lib/generators/social'
 import { renderWallpaper, WALLPAPER_STYLES } from '@/lib/generators/wallpaper'
@@ -40,7 +40,8 @@ function makeLandingScreenshot(tokens: DesignTokens): string {
 
 export async function exportAllZip(
   tokens: DesignTokens,
-  imageEl: HTMLImageElement | null
+  imageEl: HTMLImageElement | null,
+  subjects: Subject[] = []
 ): Promise<void> {
   const zip = new JSZip()
 
@@ -75,14 +76,14 @@ To customize, edit \`styles.css\` and link it to the HTML files.
   // Landing pages
   const landingFolder = zip.folder('landing')!
   for (const tpl of ['hero-left', 'centered', 'split'] as const) {
-    landingFolder.file(`${tpl}.html`, generateLandingHTML(tpl, tokens))
+    landingFolder.file(`${tpl}.html`, generateLandingHTML(tpl, tokens, subjects))
   }
 
   // Social templates
   const socialFolder = zip.folder('social')!
   for (const fmt of SOCIAL_FORMATS) {
     const canvas = document.createElement('canvas')
-    renderSocialTemplate(canvas, fmt, tokens)
+    renderSocialTemplate(canvas, fmt, tokens, subjects)
     socialFolder.file(`${fmt}.png`, await canvasToBlob(canvas))
   }
 

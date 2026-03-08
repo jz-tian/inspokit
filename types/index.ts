@@ -40,6 +40,15 @@ export interface Vibe {
   copyTone: string
 }
 
+export interface Subject {
+  category: string
+  label: string
+  emoji: string
+  confidence: number
+  copyHeadline: string
+  copySub: string
+}
+
 export type TabName = 'palette' | 'landing' | 'social' | 'wallpapers' | 'mockups'
 
 export interface AppState {
@@ -49,6 +58,8 @@ export interface AppState {
   palette: string[]
   tokens: DesignTokens | null
   vibe: Vibe | null
+  subjects: Subject[]
+  subjectsLoading: boolean
   controls: Controls
   activeTab: TabName
   fontPairingOverride: 1 | 2 | 3 | null

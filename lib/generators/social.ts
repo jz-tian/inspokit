@@ -1,4 +1,4 @@
-import type { DesignTokens } from '@/types'
+import type { DesignTokens, Subject } from '@/types'
 
 export const SOCIAL_FORMATS = [
   'post',
@@ -143,6 +143,155 @@ function drawText(
   ctx.fillText(sub, margin, yBase + headingSize * 1.4)
 }
 
+/** Draw a subject-inspired visual motif on the canvas */
+function drawSubjectMotif(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  subject: Subject,
+  color: string
+) {
+  ctx.save()
+  ctx.fillStyle = color
+  ctx.globalAlpha = 0.09
+
+  const s = w / 200 // scale factor
+
+  switch (subject.category) {
+    case 'bird': {
+      // Spread wings at upper portion of card
+      ctx.translate(w * 0.68, h * 0.22)
+      ctx.scale(s * 2.2, s * 2.2)
+      ctx.beginPath()
+      ctx.moveTo(0, 0)
+      ctx.bezierCurveTo(-14, -16, -42, -10, -62, 8)
+      ctx.bezierCurveTo(-36, 2, -16, 14, 0, 0)
+      ctx.bezierCurveTo(16, 14, 36, 2, 62, 8)
+      ctx.bezierCurveTo(42, -10, 14, -16, 0, 0)
+      ctx.fill()
+      // Tail
+      ctx.beginPath()
+      ctx.moveTo(0, 0)
+      ctx.bezierCurveTo(-5, 8, -7, 22, 0, 27)
+      ctx.bezierCurveTo(7, 22, 5, 8, 0, 0)
+      ctx.fill()
+      break
+    }
+    case 'flower': {
+      // 8-petal flower in lower-right
+      ctx.translate(w * 0.78, h * 0.72)
+      ctx.scale(s * 3.2, s * 3.2)
+      for (let angle = 0; angle < 360; angle += 45) {
+        ctx.save()
+        ctx.rotate((angle * Math.PI) / 180)
+        ctx.beginPath()
+        ctx.ellipse(0, -28, 10, 23, 0, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.restore()
+      }
+      ctx.beginPath()
+      ctx.arc(0, 0, 12, 0, Math.PI * 2)
+      ctx.fill()
+      break
+    }
+    case 'person': {
+      // Elegant fashion silhouette — head + flowing dress
+      ctx.translate(w * 0.82, h * 0.28)
+      ctx.scale(s * 2.5, s * 2.5)
+      ctx.beginPath()
+      ctx.arc(0, -48, 13, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.moveTo(-13, -34)
+      ctx.bezierCurveTo(-14, -14, -26, 18, -32, 60)
+      ctx.lineTo(32, 60)
+      ctx.bezierCurveTo(26, 18, 14, -14, 13, -34)
+      ctx.fill()
+      break
+    }
+    case 'coastal': {
+      // Wave band across bottom third
+      ctx.translate(0, h * 0.72)
+      for (let layer = 0; layer < 3; layer++) {
+        ctx.save()
+        ctx.globalAlpha = 0.07 - layer * 0.018
+        ctx.beginPath()
+        ctx.moveTo(-10, layer * 28)
+        for (let x = 0; x <= w + 10; x += 8) {
+          const y = Math.sin((x * 0.012) + layer * 1.6) * 24 + layer * 28
+          ctx.lineTo(x, y)
+        }
+        ctx.lineTo(w + 10, h)
+        ctx.lineTo(-10, h)
+        ctx.fill()
+        ctx.restore()
+      }
+      break
+    }
+    case 'landscape': {
+      // Mountain ridge at bottom
+      ctx.translate(0, h * 0.68)
+      ctx.beginPath()
+      ctx.moveTo(-20, h)
+      ctx.lineTo(w * 0.15, h * 0.1)
+      ctx.lineTo(w * 0.3, h * 0.35)
+      ctx.lineTo(w * 0.5, -h * 0.05)
+      ctx.lineTo(w * 0.65, h * 0.25)
+      ctx.lineTo(w * 0.82, h * 0.05)
+      ctx.lineTo(w + 20, h * 0.4)
+      ctx.lineTo(w + 20, h)
+      ctx.fill()
+      break
+    }
+    case 'urban': {
+      // Building skyline right side
+      ctx.translate(w * 0.55, h)
+      const buildings = [
+        { x: 0, bw: 55, bh: -h * 0.38 },
+        { x: 60, bw: 38, bh: -h * 0.22 },
+        { x: 103, bw: 62, bh: -h * 0.48 },
+        { x: 170, bw: 45, bh: -h * 0.31 },
+        { x: 220, bw: 70, bh: -h * 0.42 },
+      ]
+      buildings.forEach(b => ctx.fillRect(b.x, 0, b.bw, b.bh))
+      break
+    }
+    default: {
+      // Abstract circles for food, animal, unknown
+      const spots: [number, number, number][] = [[0.8, 0.15, 0.14], [0.15, 0.75, 0.09], [0.88, 0.65, 0.06]]
+      spots.forEach(([cx, cy, r]) => {
+        ctx.save()
+        ctx.globalAlpha = 0.06
+        ctx.beginPath()
+        ctx.arc(cx * w, cy * h, r * w, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.restore()
+      })
+    }
+  }
+
+  ctx.restore()
+}
+
+/** Large ghosted subject label — editorial typographic background element */
+function drawSubjectTypo(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  subject: Subject,
+  color: string
+) {
+  ctx.save()
+  ctx.globalAlpha = 0.055
+  ctx.fillStyle = color
+  const size = Math.round(w * 0.22)
+  ctx.font = `900 ${size}px serif`
+  ctx.textAlign = 'right'
+  ctx.textBaseline = 'bottom'
+  ctx.fillText(subject.label.toUpperCase(), w * 0.94, h * 0.97)
+  ctx.restore()
+}
+
 function drawBranding(ctx: CanvasRenderingContext2D, w: number, h: number, tokens: DesignTokens) {
   ctx.fillStyle = tokens.colors.text + '55'
   ctx.font = `400 ${Math.round(w * 0.026)}px sans-serif`
@@ -174,7 +323,8 @@ function drawCarouselProgress(
 export function renderSocialTemplate(
   canvas: HTMLCanvasElement,
   format: SocialFormat,
-  tokens: DesignTokens
+  tokens: DesignTokens,
+  subjects: Subject[] = []
 ): void {
   const [w, h] = SIZES[format]
   canvas.width = w
@@ -197,6 +347,13 @@ export function renderSocialTemplate(
           : (slideNum! - 1) % 3
 
   drawGradientBg(ctx, w, h, tokens, styles[styleIdx])
+
+  // Subject-derived visual elements
+  if (subjects.length > 0) {
+    drawSubjectMotif(ctx, w, h, subjects[0], tokens.colors.text)
+    drawSubjectTypo(ctx, w, h, subjects[0], tokens.colors.text)
+  }
+
   drawDecorativeShapes(ctx, w, h, tokens)
   drawText(ctx, w, h, tokens, slideNum)
   drawBranding(ctx, w, h, tokens)

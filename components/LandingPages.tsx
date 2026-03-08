@@ -19,15 +19,15 @@ function makePreviewSrc(html: string): string {
 }
 
 export default function LandingPages() {
-  const { tokens } = useApp()
+  const { tokens, subjects } = useApp()
   const [active, setActive] = useState<LandingTemplate>('hero-left')
 
   const htmlMap = useMemo(() => {
     if (!tokens) return {} as Record<LandingTemplate, string>
     const map = {} as Record<LandingTemplate, string>
-    for (const { id } of TEMPLATES) map[id] = generateLandingHTML(id, tokens)
+    for (const { id } of TEMPLATES) map[id] = generateLandingHTML(id, tokens, subjects)
     return map
-  }, [tokens])
+  }, [tokens, subjects])
 
   if (!tokens) return null
 

@@ -161,13 +161,15 @@ function App() {
       {/* Controls strip */}
       <Controls />
 
-      {/* Content */}
-      <div style={{ flex: 1, overflow: 'auto', padding: '2rem 1.75rem' }}>
-        {activeTab === 'palette'    && <PaletteDisplay />}
-        {activeTab === 'landing'    && <LandingPages />}
-        {activeTab === 'social'     && <SocialTemplates />}
-        {activeTab === 'wallpapers' && <Wallpapers />}
-        {activeTab === 'mockups'    && <Mockups />}
+      {/* Content — centred */}
+      <div style={{ flex: 1, overflow: 'auto', padding: '2.5rem 2rem' }}>
+        <div style={{ maxWidth: '1160px', margin: '0 auto' }}>
+          {activeTab === 'palette'    && <PaletteDisplay />}
+          {activeTab === 'landing'    && <LandingPages />}
+          {activeTab === 'social'     && <SocialTemplates />}
+          {activeTab === 'wallpapers' && <Wallpapers />}
+          {activeTab === 'mockups'    && <Mockups />}
+        </div>
       </div>
     </main>
   )

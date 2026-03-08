@@ -49,6 +49,10 @@ body {
   50%       { background-position: 100% 50%; }
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Card surfaces */
 .card {
   background: var(--bg);

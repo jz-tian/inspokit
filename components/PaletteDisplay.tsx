@@ -20,7 +20,7 @@ function Card({ children, style }: { children: React.ReactNode; style?: React.CS
 }
 
 export default function PaletteDisplay() {
-  const { palette, tokens, vibe, setFontOverride, fontPairingOverride } = useApp()
+  const { palette, tokens, vibe, subjects, subjectsLoading, setFontOverride, fontPairingOverride } = useApp()
   if (!tokens) return null
 
   const contrastRatio = wcagRatio(tokens.colors.text, tokens.colors.bg)
@@ -123,6 +123,53 @@ export default function PaletteDisplay() {
               <p style={{ color: 'var(--text-2)', fontSize: '0.875rem', lineHeight: 1.5 }}>{vibe.copyTone}</p>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ── Detected subjects ────────────────────────── */}
+      {(subjects.length > 0 || subjectsLoading) && (
+        <div className="card" style={{ gridColumn: '1 / -1', padding: '1.25rem' }}>
+          <SectionLabel>Detected Elements</SectionLabel>
+          {subjectsLoading && subjects.length === 0 ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-3)', fontSize: '0.8125rem' }}>
+              <div style={{ width: '14px', height: '14px', border: '2px solid var(--border-strong)', borderTop: '2px solid var(--text-3)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+              Analysing image contents…
+            </div>
+          ) : (
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+              {subjects.map(s => (
+                <div
+                  key={s.category}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '0.6rem',
+                    background: 'var(--surface)', border: '1px solid var(--border)',
+                    borderRadius: '12px', padding: '0.6rem 1rem',
+                  }}
+                >
+                  <span style={{ fontSize: '1.25rem' }}>{s.emoji}</span>
+                  <div>
+                    <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text)' }}>{s.label}</p>
+                    <p style={{ fontFamily: "'DM Mono', monospace", fontSize: '0.625rem', color: 'var(--text-3)', marginTop: '0.1rem' }}>
+                      {Math.round(s.confidence * 100)}% confidence
+                    </p>
+                  </div>
+                </div>
+              ))}
+              {subjects.length > 0 && (
+                <div style={{
+                  display: 'flex', alignItems: 'center',
+                  padding: '0.6rem 1rem',
+                  background: tokens.colors.accent + '14',
+                  border: `1px solid ${tokens.colors.accent}33`,
+                  borderRadius: '12px',
+                }}>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-2)', fontStyle: 'italic' }}>
+                    &ldquo;{subjects[0].copyHeadline}&rdquo;
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 

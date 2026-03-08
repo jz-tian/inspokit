@@ -1,9 +1,10 @@
 'use client'
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
-import type { AppState, Controls, TabName, Vibe } from '@/types'
+import type { AppState, Controls, TabName, Subject } from '@/types'
 import { generateTokens } from '@/lib/tokens'
 import { extractPalette } from '@/lib/palette'
 import { extractVibe } from '@/lib/vibe'
+import { detectSubjects } from '@/lib/subjects'
 
 const DEFAULT_CONTROLS: Controls = { roundedness: 0.5, boldness: 0.5, contrast: 0.5 }
 
@@ -24,6 +25,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     palette: [],
     tokens: null,
     vibe: null,
+    subjects: [],
+    subjectsLoading: false,
     controls: DEFAULT_CONTROLS,
     activeTab: 'palette',
     fontPairingOverride: null,
@@ -35,12 +38,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     img.src = url
     await new Promise<void>(res => { img.onload = () => res() })
 
-    const [palette, vibe] = await Promise.all([
-      extractPalette(img),
-      Promise.resolve(extractVibe(img)),
-    ])
+    const vibe = extractVibe(img)
+    const palette = await extractPalette(img)
     const tokens = generateTokens(palette, DEFAULT_CONTROLS, null)
 
+    // Commit palette/vibe immediately so UI is responsive
     setState(s => ({
       ...s,
       imageFile: file,
@@ -49,10 +51,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
       palette,
       tokens,
       vibe,
+      subjects: [],
+      subjectsLoading: true,
       controls: DEFAULT_CONTROLS,
       fontPairingOverride: null,
       activeTab: 'palette',
     }))
+
+    // Subject detection loads the TF model (~1.5MB) — run async after render
+    const subjects = await detectSubjects(img)
+    setState(s => ({ ...s, subjects, subjectsLoading: false }))
   }, [])
 
   const setControls = useCallback((partial: Partial<Controls>) => {

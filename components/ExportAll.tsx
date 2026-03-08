@@ -4,7 +4,7 @@ import { useApp } from '@/context/AppContext'
 import { exportAllZip } from '@/lib/exporters/zip'
 
 export default function ExportAll() {
-  const { tokens, imageEl, imageUrl } = useApp()
+  const { tokens, imageEl, imageUrl, subjects } = useApp()
   const [loading, setLoading] = useState(false)
 
   if (!imageUrl) return null
@@ -13,7 +13,7 @@ export default function ExportAll() {
     if (!tokens || loading) return
     setLoading(true)
     try {
-      await exportAllZip(tokens, imageEl)
+      await exportAllZip(tokens, imageEl, subjects)
     } finally {
       setLoading(false)
     }

@@ -1,4 +1,5 @@
-import type { DesignTokens } from '@/types'
+import type { DesignTokens, Subject } from '@/types'
+import { getSubjectMotif, getSubjectCopy } from '@/lib/subjects'
 
 export type LandingTemplate = 'hero-left' | 'centered' | 'split'
 
@@ -161,12 +162,13 @@ function footerHtml(): string {
   return `<footer><p>© 2026 Brand, Inc. · All rights reserved · <a href="#" style="opacity:.6">Privacy</a> · <a href="#" style="opacity:.6">Terms</a></p></footer>`
 }
 
-function heroLeftHtml(tokens: DesignTokens): string {
-  return `<section style="display:grid;grid-template-columns:1fr 1fr;min-height:88vh;align-items:center;padding:0 4rem;gap:5rem;background:var(--color-bg)">
-  <div>
+function heroLeftHtml(tokens: DesignTokens, headline: string, sub: string, motif: string): string {
+  return `<section style="position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;min-height:88vh;align-items:center;padding:0 4rem;gap:5rem;background:var(--color-bg);color:var(--color-text)">
+  ${motif}
+  <div style="position:relative;z-index:1">
     <p style="text-transform:uppercase;letter-spacing:.18em;font-size:.75rem;color:${tokens.colors.accent};margin-bottom:1.25rem;font-weight:600">Introducing Brand</p>
-    <h1 style="font-size:3.75rem;margin-bottom:1.5rem;line-height:1.1">Design systems that <em style="color:${tokens.colors.accent};font-style:normal">inspire</em></h1>
-    <p style="color:${tokens.colors.textMuted};font-size:1.1rem;margin-bottom:2.5rem;max-width:38ch;line-height:1.7">Extract your palette, generate tokens, and ship beautiful products faster than ever before.</p>
+    <h1 style="font-size:3.75rem;margin-bottom:1.5rem;line-height:1.1">${headline}</h1>
+    <p style="color:${tokens.colors.textMuted};font-size:1.1rem;margin-bottom:2.5rem;max-width:38ch;line-height:1.7">${sub}</p>
     <div style="display:flex;gap:1rem;align-items:center">
       <a href="#" class="btn">Get started free</a>
       <a href="#" class="btn btn-outline">View demo →</a>
@@ -179,32 +181,36 @@ function heroLeftHtml(tokens: DesignTokens): string {
 </section>`
 }
 
-function centeredHtml(tokens: DesignTokens): string {
-  return `<section style="text-align:center;padding:9rem 4rem 7rem;background:${tokens.gradients.mesh},var(--color-bg)">
-  <div style="display:inline-block;background:${tokens.colors.accent}22;border:1px solid ${tokens.colors.accent}44;border-radius:9999px;padding:.35rem 1rem;margin-bottom:1.5rem">
-    <span style="font-size:.75rem;color:${tokens.colors.accent};font-weight:600;letter-spacing:.1em;text-transform:uppercase">New · Spring 2026</span>
-  </div>
-  <h1 style="font-size:4.5rem;margin-bottom:1.5rem;max-width:13ch;margin-left:auto;margin-right:auto;line-height:1.05">The design toolkit you always wanted</h1>
-  <p style="color:${tokens.colors.textMuted};max-width:44ch;margin:0 auto 3rem;font-size:1.15rem;line-height:1.65">Go from image to full design system in seconds. Palette, tokens, landing pages, social templates — all generated instantly.</p>
-  <div style="display:flex;gap:1rem;justify-content:center;align-items:center">
-    <a href="#" class="btn" style="font-size:1rem;padding:.9rem 2.25rem">Start for free →</a>
-    <a href="#" style="color:${tokens.colors.textMuted};font-size:.9rem">Watch demo ↗</a>
+function centeredHtml(tokens: DesignTokens, headline: string, sub: string, motif: string): string {
+  return `<section style="position:relative;overflow:hidden;text-align:center;padding:9rem 4rem 7rem;background:${tokens.gradients.mesh},var(--color-bg);color:var(--color-text)">
+  ${motif}
+  <div style="position:relative;z-index:1">
+    <div style="display:inline-block;background:${tokens.colors.accent}22;border:1px solid ${tokens.colors.accent}44;border-radius:9999px;padding:.35rem 1rem;margin-bottom:1.5rem">
+      <span style="font-size:.75rem;color:${tokens.colors.accent};font-weight:600;letter-spacing:.1em;text-transform:uppercase">New · Spring 2026</span>
+    </div>
+    <h1 style="font-size:4.5rem;margin-bottom:1.5rem;max-width:14ch;margin-left:auto;margin-right:auto;line-height:1.05">${headline}</h1>
+    <p style="color:${tokens.colors.textMuted};max-width:44ch;margin:0 auto 3rem;font-size:1.15rem;line-height:1.65">${sub}</p>
+    <div style="display:flex;gap:1rem;justify-content:center;align-items:center">
+      <a href="#" class="btn" style="font-size:1rem;padding:.9rem 2.25rem">Start for free →</a>
+      <a href="#" style="color:${tokens.colors.textMuted};font-size:.9rem">Watch demo ↗</a>
+    </div>
   </div>
 </section>`
 }
 
-function splitHtml(tokens: DesignTokens): string {
+function splitHtml(tokens: DesignTokens, headline: string, sub: string, motif: string): string {
   return `<section style="display:grid;grid-template-columns:1fr 1fr;min-height:88vh">
   <div style="background:${tokens.gradients.linear};display:flex;align-items:center;justify-content:center;padding:4rem;position:relative;overflow:hidden">
     <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 70%, rgba(255,255,255,.12) 0%, transparent 60%)"></div>
+    ${motif ? `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0.4">${motif.replace(/style="[^"]*position:absolute[^"]*"/g, 'style="position:relative;width:60%;height:auto"')}</div>` : ''}
     <div style="width:220px;height:220px;background:rgba(255,255,255,.15);border-radius:${tokens.radii.lg};backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);position:relative;z-index:1;display:flex;align-items:center;justify-content:center">
       <div style="width:100px;height:100px;background:rgba(255,255,255,.2);border-radius:50%"></div>
     </div>
   </div>
-  <div style="display:flex;flex-direction:column;justify-content:center;padding:5rem 4rem;background:var(--color-bg)">
+  <div style="display:flex;flex-direction:column;justify-content:center;padding:5rem 4rem;background:var(--color-bg);position:relative;overflow:hidden">
     <p style="color:${tokens.colors.accent};margin-bottom:1rem;font-size:.8rem;text-transform:uppercase;letter-spacing:.15em;font-weight:600">Design at scale</p>
-    <h1 style="font-size:3.25rem;margin-bottom:1.5rem;line-height:1.1">Built for teams who move fast</h1>
-    <p style="color:${tokens.colors.textMuted};margin-bottom:2.5rem;max-width:38ch;font-size:1rem;line-height:1.7">Generate a complete design system from a single image. Export HTML, tokens, and social assets instantly. Zero paid tools.</p>
+    <h1 style="font-size:3.25rem;margin-bottom:1.5rem;line-height:1.1">${headline}</h1>
+    <p style="color:${tokens.colors.textMuted};margin-bottom:2.5rem;max-width:38ch;font-size:1rem;line-height:1.7">${sub}</p>
     <div style="display:flex;gap:1rem;align-items:center">
       <a href="#" class="btn">Try it free</a>
       <a href="#" class="btn btn-outline">Learn more</a>
@@ -213,13 +219,16 @@ function splitHtml(tokens: DesignTokens): string {
 </section>`
 }
 
-export function generateLandingHTML(template: LandingTemplate, tokens: DesignTokens): string {
+export function generateLandingHTML(template: LandingTemplate, tokens: DesignTokens, subjects: Subject[] = []): string {
+  const { headline, sub } = getSubjectCopy(subjects)
+  const motif = getSubjectMotif(subjects)
+
   const heroHtml =
     template === 'hero-left'
-      ? heroLeftHtml(tokens)
+      ? heroLeftHtml(tokens, headline, sub, motif)
       : template === 'centered'
-        ? centeredHtml(tokens)
-        : splitHtml(tokens)
+        ? centeredHtml(tokens, headline, sub, motif)
+        : splitHtml(tokens, headline, sub, motif)
 
   return `<!DOCTYPE html>
 <html lang="en">
