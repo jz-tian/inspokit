@@ -1,2 +1,120 @@
 'use client'
-export default function SocialTemplates() { return <div className="text-white/40 p-8">Social Templates — coming soon</div> }
+import { useEffect, useRef } from 'react'
+import { useApp } from '@/context/AppContext'
+import {
+  renderSocialTemplate,
+  SOCIAL_FORMATS,
+  FORMAT_LABELS,
+  SocialFormat,
+} from '@/lib/generators/social'
+import type { DesignTokens } from '@/types'
+import { saveAs } from 'file-saver'
+import JSZip from 'jszip'
+
+function SocialCard({
+  format,
+  tokens,
+}: {
+  format: SocialFormat
+  tokens: DesignTokens
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      renderSocialTemplate(canvasRef.current, format, tokens)
+    }
+  }, [format, tokens])
+
+  const download = () => {
+    if (!canvasRef.current) return
+    canvasRef.current.toBlob(
+      blob => blob && saveAs(blob, `${format}.png`),
+      'image/png'
+    )
+  }
+
+  const isWide = format === 'post'
+  const isStory = format === 'story'
+
+  return (
+    <div className="glass rounded-xl overflow-hidden flex flex-col">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-white/8">
+        <span className="text-xs text-white/40 truncate">{FORMAT_LABELS[format]}</span>
+        <button
+          onClick={download}
+          className="text-xs text-white/30 hover:text-white/60 transition-colors ml-2 shrink-0"
+        >
+          ↓
+        </button>
+      </div>
+      <canvas
+        ref={canvasRef}
+        style={{
+          width: '100%',
+          height: 'auto',
+          display: 'block',
+          maxHeight: isStory ? '280px' : '200px',
+          objectFit: 'contain',
+        }}
+      />
+    </div>
+  )
+}
+
+export default function SocialTemplates() {
+  const { tokens } = useApp()
+  if (!tokens) return null
+
+  const exportAll = async () => {
+    const zip = new JSZip()
+    for (const fmt of SOCIAL_FORMATS) {
+      const canvas = document.createElement('canvas')
+      renderSocialTemplate(canvas, fmt, tokens)
+      const blob = await new Promise<Blob>(res =>
+        canvas.toBlob(b => res(b!), 'image/png')
+      )
+      zip.file(`${fmt}.png`, blob)
+    }
+    const blob = await zip.generateAsync({ type: 'blob' })
+    saveAs(blob, 'inspokit-social.zip')
+  }
+
+  // Group: non-carousel + carousel
+  const standalones = SOCIAL_FORMATS.filter(f => !f.startsWith('carousel-'))
+  const carousel = SOCIAL_FORMATS.filter(f => f.startsWith('carousel-'))
+
+  return (
+    <div className="space-y-6 max-w-5xl">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xs uppercase tracking-widest text-white/30">Social Templates</h2>
+        <button
+          onClick={exportAll}
+          className="text-sm px-4 py-2 glass rounded-lg hover:bg-white/8 transition-colors"
+        >
+          Export All ZIP ↓
+        </button>
+      </div>
+
+      {/* Standalone formats */}
+      <div>
+        <p className="text-xs text-white/25 mb-3">Standalone</p>
+        <div className="grid grid-cols-3 gap-4">
+          {standalones.map(fmt => (
+            <SocialCard key={fmt} format={fmt} tokens={tokens} />
+          ))}
+        </div>
+      </div>
+
+      {/* Carousel */}
+      <div>
+        <p className="text-xs text-white/25 mb-3">Carousel (5 slides)</p>
+        <div className="grid grid-cols-5 gap-3">
+          {carousel.map(fmt => (
+            <SocialCard key={fmt} format={fmt} tokens={tokens} />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
